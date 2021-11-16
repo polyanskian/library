@@ -1,0 +1,15 @@
+version: '3.0'
+
+services:
+    postgres:
+        container_name: ${PROJECT_NAME}-postgres-12.0
+        image: postgres:12.0
+        restart: unless-stopped
+        environment:
+            POSTGRES_USER: ${POSTGRES_USER}
+            POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+        volumes:
+          - ./docker/postgres/init:/docker-entrypoint-initdb.d
+          - ./.docker/postgres:/var/lib/postgresql/data
+        ports:
+          - "${POSTGRES_PORT}:5432"
