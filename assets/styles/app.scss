@@ -1,0 +1,6 @@
+@import '~bootstrap/scss/bootstrap';
+
+form label.required:before {
+    content: "*";
+    margin-right: 5px;
+}
