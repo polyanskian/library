@@ -1,9 +1,14 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Entity;
 
 use App\Repository\BookRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Mapping\ClassMetadata;
+use Symfony\Component\Validator\Constraints\NotBlank;
+use Symfony\Component\Validator\Constraints\Type;
 
 /**
  * @ORM\Entity(repositoryClass=BookRepository::class)
@@ -18,44 +23,54 @@ class Book
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
      */
-    private $id;
+    private int $id;
 
     /**
      * @ORM\Column(type="string", length=255)
      */
-    private $name;
+    private string $name;
 
     /**
      * @ORM\Column(type="string", length=255)
      */
-    private $author;
+    private string $author;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
      */
-    private $cover;
+    private ?string $cover;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
      */
-    private $file;
+    private ?string $file;
 
     /**
      * @ORM\Column(type="datetime")
      */
-    private $date_read;
+    private \DateTimeInterface $date_read;
 
     /**
      * @ORM\Column(type="boolean", options={"default" = 0})
      */
-    private $is_download;
+    private bool $is_download;
 
-    public function getId(): ?int
+    public static function loadValidatorMetadata(ClassMetadata $metadata): void
+    {
+        $metadata->addPropertyConstraint('name', new NotBlank());
+
+        $metadata->addPropertyConstraint('date_read', new NotBlank());
+        $metadata->addPropertyConstraint('date_read', new Type(\DateTime::class));
+
+        $metadata->addPropertyConstraint('author', new NotBlank());
+    }
+
+    public function getId(): int
     {
         return $this->id;
     }
 
-    public function getName(): ?string
+    public function getName(): string
     {
         return $this->name;
     }
@@ -63,11 +78,10 @@ class Book
     public function setName(string $name): self
     {
         $this->name = $name;
-
         return $this;
     }
 
-    public function getAuthor(): ?string
+    public function getAuthor(): string
     {
         return $this->author;
     }
@@ -75,7 +89,6 @@ class Book
     public function setAuthor(string $author): self
     {
         $this->author = $author;
-
         return $this;
     }
 
@@ -87,7 +100,6 @@ class Book
     public function setCover(?string $cover): self
     {
         $this->cover = $cover;
-
         return $this;
     }
 
@@ -99,23 +111,25 @@ class Book
     public function setFile(?string $file): self
     {
         $this->file = $file;
-
         return $this;
     }
 
-    public function getDateRead(): ?\DateTimeInterface
+    public function getDateRead(): \DateTimeInterface
     {
+        if (!isset($this->date_read)) {
+            $this->date_read = new \DateTime();
+        }
+
         return $this->date_read;
     }
 
     public function setDateRead(\DateTimeInterface $date_read): self
     {
         $this->date_read = $date_read;
-
         return $this;
     }
 
-    public function getIsDownload(): ?bool
+    public function getIsDownload(): bool
     {
         return $this->is_download;
     }
@@ -123,7 +137,6 @@ class Book
     public function setIsDownload(bool $is_download): self
     {
         $this->is_download = $is_download;
-
         return $this;
     }
 }
