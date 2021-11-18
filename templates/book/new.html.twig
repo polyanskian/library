@@ -1,0 +1,36 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Добавить книгу{% endblock %}
+
+{% block body %}
+    <div class="container">
+        <h1>Добавить книгу</h1>
+
+        <div class="row">
+            <div class="col-6">
+                <b>Выводится форма с полями:</b>
+                <ul>
+                    <li>Название</li>
+                    <li>Автор</li>
+                    <li>Обложка (png, jpg)</li>
+                    <li>Файл с книгой (до 5мб)</li>
+                    <li>Дата прочтения</li>
+                    <li>Галочка «Разрешить скачивание»</li>
+                </ul>
+            </div>
+            <div class="col-6">
+                <ul>
+                    <li>Обложку и файл с книгой сохранять таким образом,</li>
+                    <li>чтобы не было конфликтов одинаковых названий</li>
+                    <li>и проблемы скопления большого количества файлов в одной папке.</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="text-end mb-3">
+            <a class="btn btn-outline-secondary" href="{{ path('book_index') }}">Отмена</a>
+        </div>
+
+        {{ include('book/_form.html.twig') }}
+    </div>
+{% endblock %}

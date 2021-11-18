@@ -1,0 +1,89 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Список книг{% endblock %}
+
+{% block body %}
+    <style>
+        .book-image--list-all {
+            max-width: 50px;
+            opacity: .4
+        }
+    </style>
+
+    <div class="container">
+        <h1>Список книг</h1>
+
+        <div class="row">
+            <div class="col-6">
+                <b>Неавторизованный режим</b>
+                <ul>
+                    <li>Выводим список книг в порядке прочтения с указанием названия, автора и обложки,</li>
+                    <li>а также ссылка на скачивание, если она разрешена для книги.</li>
+                    <li>Предусмотреть кеширование запроса получения списка книг на 24 часа.</li>
+                    <li>При редактировании/добавлении книги кеш должен сбрасываться.</li>
+                </ul>
+            </div>
+            <div class="col-6">
+                <b>Авторизованный режим</b>
+                <ul>
+                    <li>У каждой книги кроме описанного выше выводится ссылка Редактировать.</li>
+                    <li>Также в начале страницы выводится ссылка Добавить книгу.</li>
+                </ul>
+            </div>
+        </div>
+
+        <p>
+            <a class="btn btn-outline-success" href="{{ path('book_new') }}">Добавить книгу</a>
+        </p>
+
+        <table class="table align-middle caption-top">
+            <caption>Всего книг: {{ books|length }}</caption>
+            <thead>
+                <tr>
+                    <td></td>
+{#                    <th>ID</th>#}
+                    <th>Обложка</th>
+                    <th>Название</th>
+                    <th>Автор</th>
+                    <th>Файл</th>
+                    <th>Дата прочтения</th>
+                    <th>Доступно для скачивания</th>
+                    <th>Действия</th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for book in books %}
+                <tr>
+                    <td>{{ loop.index }}</td>
+{#                    <td>{{ book.id }}</td>#}
+                    <td>
+                        {% if book.cover  %}
+                            <img class="book-image book-image--list-all" src="{{ book.cover }}">
+                        {% else %}
+                            <img class="book-image book-image--list-all" src="/images/00.png">
+                        {% endif %}
+                    </td>
+                    <td>{{ book.name }}</td>
+                    <td>{{ book.author }}</td>
+                    <td>
+                        {% if book.file and book.isDownload %}
+                            <a href="#">Скачать</a>
+                            {{ book.file }}
+                        {% endif %}
+                    </td>
+                    <td>{{ book.dateRead ? book.dateRead|date('Y-m-d H:i:s') : '' }}</td>
+                    <td class="{{ book.isDownload ? 'text-success' : 'text-danger' }}">{{ book.isDownload ? 'Да' : 'Нет' }}</td>
+                    <td>
+                        <a class="btn btn-outline-warning" href="{{ path('book_edit', {'id': book.id}) }}">Редактировать</a>
+                        {{ include('book/_delete_form.html.twig') }}
+                    </td>
+                </tr>
+            {% else %}
+                <tr>
+                    <td colspan="8">Нет записей</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% endblock %}
