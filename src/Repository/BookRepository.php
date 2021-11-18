@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Repository;
 
 use App\Entity\Book;
@@ -17,6 +19,19 @@ class BookRepository extends ServiceEntityRepository
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, Book::class);
+    }
+
+    /**
+     * @return Book[]
+     */
+    public function findByReadingAll(): array
+    {
+        return $this->createQueryBuilder('b')
+            ->orderBy('b.date_read', 'DESC')
+            ->setMaxResults(10)
+            ->getQuery()
+            ->getResult()
+            ;
     }
 
     // /**
