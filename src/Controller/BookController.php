@@ -73,7 +73,7 @@ class BookController extends AbstractController
     }
 
     /**
-     * @Route("/edit/{id}", name="book_edit", methods={"GET","POST"})
+     * @Route("/{id}/edit", name="book_edit", methods={"GET","POST"})
      */
     public function edit(Book $book, Request $request, FileUploader $fileUploader, Filesystem $fs): Response
     {
@@ -127,7 +127,7 @@ class BookController extends AbstractController
     }
 
     /**
-     * @Route("/delete/{id}", name="book_delete", methods={"POST"})
+     * @Route("/{id}/delete", name="book_delete", methods={"POST"})
      */
     public function delete(Book $book, Request $request, Filesystem $fs): Response
     {
@@ -147,7 +147,7 @@ class BookController extends AbstractController
     }
 
     /**
-     * @Route("/delete-cover/{id}", name="book_delete_cover", methods={"POST"})
+     * @Route("/{id}/delete-cover", name="book_delete_cover", methods={"POST"})
      */
     public function deleteCover(Book $book, Request $request, FileUploader $fileUploader): Response
     {
@@ -169,7 +169,7 @@ class BookController extends AbstractController
     }
 
     /**
-     * @Route("/delete-file/{id}", name="book_delete_file", methods={"POST"})
+     * @Route("/{id}/delete-file", name="book_delete_file", methods={"POST"})
      */
     public function deleteFile(Book $book, Request $request, FileUploader $fileUploader): Response
     {
