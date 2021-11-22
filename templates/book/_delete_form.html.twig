@@ -1,9 +1,4 @@
-<form
-    class="d-inline-block"
-    method="post"
-    action="{{ path('book_delete', {'id': book.id}) }}"
-    onsubmit="return confirm('Удалить книгу?');"
->
-    <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ book.id) }}">
-    <button class="btn btn-outline-danger">Удалить</button>
+<form method="post" action="{{ action }}" onsubmit="return confirm('{{ question }}');">
+    <input type="hidden" name="_token" value="{{ token_key }}">
+    <button class="{{ btn_class|default('btn btn-outline-danger btn-sm') }}">{{ caption }}</button>
 </form>

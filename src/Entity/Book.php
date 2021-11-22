@@ -55,6 +55,23 @@ class Book
      */
     private bool $is_download;
 
+    public function getFilePath(): string
+    {
+        $file = $this->getFile();
+        return ($file) ? "{$this->getDirUpload()}/$file" : '';
+    }
+
+    public function getCoverPath(): string
+    {
+        $cover = $this->getCover();
+        return ($cover) ? "{$this->getDirUpload()}/$cover" : '';
+    }
+
+    public function getDirUpload(): string
+    {
+        return "book/{$this->getId()}";
+    }
+
     public static function loadValidatorMetadata(ClassMetadata $metadata): void
     {
         $metadata->addPropertyConstraint('name', new NotBlank());
@@ -75,9 +92,9 @@ class Book
         return $this->name;
     }
 
-    public function setName(string $name): self
+    public function setName(?string $name): self
     {
-        $this->name = $name;
+        $this->name = (string) $name;
         return $this;
     }
 
@@ -86,15 +103,15 @@ class Book
         return $this->author;
     }
 
-    public function setAuthor(string $author): self
+    public function setAuthor(?string $author): self
     {
-        $this->author = $author;
+        $this->author = (string) $author;
         return $this;
     }
 
-    public function getCover(): ?string
+    public function getCover(): string
     {
-        return $this->cover;
+        return $this->cover ?? '';
     }
 
     public function setCover(?string $cover): self
@@ -103,9 +120,9 @@ class Book
         return $this;
     }
 
-    public function getFile(): ?string
+    public function getFile(): string
     {
-        return $this->file;
+        return $this->file ?? '';
     }
 
     public function setFile(?string $file): self

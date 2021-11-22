@@ -4,8 +4,10 @@
 
 {% block body %}
     <style>
-        .book-image--list-all {
+        .book-image--list {
             max-width: 50px;
+        }
+        .book-image--empty {
             opacity: .4
         }
     </style>
@@ -47,7 +49,7 @@
                     <th>Автор</th>
                     <th>Файл</th>
                     <th>Дата прочтения</th>
-                    <th>Доступно для скачивания</th>
+{#                    <th>Доступно для скачивания</th>#}
                     <th>Действия</th>
                 </tr>
             </thead>
@@ -58,24 +60,31 @@
 {#                    <td>{{ book.id }}</td>#}
                     <td>
                         {% if book.cover  %}
-                            <img class="book-image book-image--list-all" src="{{ book.cover }}">
+                            <img class="book-image book-image--list" src="{{ asset("#{dir_upload}/#{book.getCoverPath()}") }}">
                         {% else %}
-                            <img class="book-image book-image--list-all" src="/images/00.png">
+                            <img class="book-image book-image--list book-image--empty" src="{{ asset('images/book-default.png') }}">
                         {% endif %}
                     </td>
                     <td>{{ book.name }}</td>
                     <td>{{ book.author }}</td>
                     <td>
                         {% if book.file and book.isDownload %}
-                            <a href="#">Скачать</a>
-                            {{ book.file }}
+                            <a href="{{ asset("#{dir_upload}/#{book.getFilePath()}") }}">Скачать</a>
                         {% endif %}
                     </td>
-                    <td>{{ book.dateRead ? book.dateRead|date('Y-m-d H:i:s') : '' }}</td>
-                    <td class="{{ book.isDownload ? 'text-success' : 'text-danger' }}">{{ book.isDownload ? 'Да' : 'Нет' }}</td>
+                    <td>{{ book.dateRead ? book.dateRead|date('d.m.Y') : '' }}</td>
+{#                    <td class="{{ book.isDownload ? 'text-success' : 'text-danger' }}">{{ book.isDownload ? 'Да' : 'Нет' }}</td>#}
                     <td>
-                        <a class="btn btn-outline-warning" href="{{ path('book_edit', {'id': book.id}) }}">Редактировать</a>
-                        {{ include('book/_delete_form.html.twig') }}
+                        <a class="btn btn-outline-warning btn-sm" href="{{ path('book_edit', {'id': book.id}) }}">Редактировать</a>
+
+                        <div class="d-inline-block">
+                            {{ include('book/_delete_form.html.twig', {
+                                'action': path('book_delete', {'id': book.id}),
+                                'token_key': csrf_token("delete-#{book.id}"),
+                                'question': 'Удалить книгу?',
+                                'caption': 'Удалить',
+                            }) }}
+                        </div>
                     </td>
                 </tr>
             {% else %}
