@@ -6,6 +6,7 @@
 parameters:
     dir_upload: 'uploads'
     path_dir_upload: '%kernel.project_dir%/public/%dir_upload%'
+    mailer_user: 'test@test.test'
 
 services:
     # default configuration for services in *this* file

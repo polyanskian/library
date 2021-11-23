@@ -1,0 +1,10 @@
+fos_user:
+  db_driver: 'orm'
+  user_class: 'App\Entity\User'
+  firewall_name: 'main'
+  from_email:
+    address: "%mailer_user%"
+    sender_name: "%mailer_user%"
+
+  service:
+      mailer: fos_user.mailer.twig_swift

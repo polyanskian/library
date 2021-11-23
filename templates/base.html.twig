@@ -14,6 +14,32 @@
         {% endblock %}
     </head>
     <body>
+        {% block nav_main %}
+            <div class="container">
+                <nav class="navbar navbar-expand-lg bg-light">
+                    <div class="container-fluid">
+{#                        <a class="navbar-brand" href="{{ path('book_index') }}">Список книг</a>#}
+
+                        <div class="collapse navbar-collapse" id="navbarText">
+                            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                                <li class="nav-item">
+                                    <a class="nav-link" href="{{ path('book_index') }}">Список книг</a>
+                                </li>
+                            </ul>
+                            <span class="text-center">
+                                {% if not app.user %}
+                                    <a class="" href="{{ path('fos_user_security_login') }}">Войти</a>
+                                {% else %}
+                                    <div>Пользователь: {{ app.user.username }}</div>
+                                    <a class="" href="{{ path('fos_user_security_logout') }}">Выйти</a>
+                                {% endif %}
+                            </span>
+                        </div>
+                    </div>
+                </nav>
+            </div>
+        {% endblock %}
+
         {% block body %}{% endblock %}
     </body>
 </html>

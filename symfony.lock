@@ -103,6 +103,9 @@
     "friendsofphp/proxy-manager-lts": {
         "version": "v1.0.5"
     },
+    "friendsofsymfony/user-bundle": {
+        "version": "3.x-dev"
+    },
     "fzaninotto/faker": {
         "version": "v1.9.2"
     },
@@ -520,6 +523,9 @@
     },
     "symfony/string": {
         "version": "v5.3.10"
+    },
+    "symfony/templating": {
+        "version": "v5.3.7"
     },
     "symfony/translation": {
         "version": "5.3",

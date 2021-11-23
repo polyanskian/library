@@ -34,9 +34,11 @@
             </div>
         </div>
 
-        <p>
-            <a class="btn btn-outline-success" href="{{ path('book_new') }}">Добавить книгу</a>
-        </p>
+        {% if app.user %}
+            <p>
+                <a class="btn btn-outline-success" href="{{ path('book_new') }}">Добавить книгу</a>
+            </p>
+        {% endif %}
 
         <table class="table align-middle caption-top">
             <caption>Всего книг: {{ books|length }}</caption>
@@ -50,7 +52,9 @@
                     <th>Файл</th>
                     <th>Дата прочтения</th>
 {#                    <th>Доступно для скачивания</th>#}
-                    <th>Действия</th>
+                    {% if app.user %}
+                        <th>Действия</th>
+                    {% endif %}
                 </tr>
             </thead>
             <tbody>
@@ -74,18 +78,21 @@
                     </td>
                     <td>{{ book.dateRead ? book.dateRead|date('d.m.Y') : '' }}</td>
 {#                    <td class="{{ book.isDownload ? 'text-success' : 'text-danger' }}">{{ book.isDownload ? 'Да' : 'Нет' }}</td>#}
-                    <td>
-                        <a class="btn btn-outline-warning btn-sm" href="{{ path('book_edit', {'id': book.id}) }}">Редактировать</a>
 
-                        <div class="d-inline-block">
-                            {{ include('book/_delete_form.html.twig', {
-                                'action': path('book_delete', {'id': book.id}),
-                                'token_key': csrf_token("delete-#{book.id}"),
-                                'question': 'Удалить книгу?',
-                                'caption': 'Удалить',
-                            }) }}
-                        </div>
-                    </td>
+                    {% if app.user %}
+                        <td>
+                            <a class="btn btn-outline-warning btn-sm" href="{{ path('book_edit', {'id': book.id}) }}">Редактировать</a>
+
+                            <div class="d-inline-block">
+                                {{ include('book/_delete_form.html.twig', {
+                                    'action': path('book_delete', {'id': book.id}),
+                                    'token_key': csrf_token("delete-#{book.id}"),
+                                    'question': 'Удалить книгу?',
+                                    'caption': 'Удалить',
+                                }) }}
+                            </div>
+                        </td>
+                    {% endif %}
                 </tr>
             {% else %}
                 <tr>
