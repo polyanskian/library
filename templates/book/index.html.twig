@@ -34,7 +34,7 @@
             </div>
         </div>
 
-        {% if app.user %}
+        {% if is_granted('ROLE_ADMIN') %}
             <p>
                 <a class="btn btn-outline-success" href="{{ path('book_new') }}">Добавить книгу</a>
             </p>
@@ -79,7 +79,7 @@
                     <td>{{ book.dateRead ? book.dateRead|date('d.m.Y') : '' }}</td>
 {#                    <td class="{{ book.isDownload ? 'text-success' : 'text-danger' }}">{{ book.isDownload ? 'Да' : 'Нет' }}</td>#}
 
-                    {% if app.user %}
+                    {% if is_granted('ROLE_ADMIN') %}
                         <td>
                             <a class="btn btn-outline-warning btn-sm" href="{{ path('book_edit', {'id': book.id}) }}">Редактировать</a>
 
