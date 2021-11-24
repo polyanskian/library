@@ -22,7 +22,7 @@ class BookController extends AbstractController
     /**
      * @Route("/", name="book_index", methods={"GET"})
      */
-    public function index(BookRepository $bookRepository, FileUploader $fileUploader): Response
+    public function index(BookRepository $bookRepository): Response
     {
         return $this->render('book/index.html.twig', [
             'books' => $bookRepository->findByReadingAll(),
