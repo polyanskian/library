@@ -29,6 +29,7 @@ services:
             - "${DOCKER_PHP_7_4_PORT}:9000"
         depends_on:
             - postgres
+        user: 1000:1000
 
     postgres:
         container_name: ${DOCKER_PROJECT_NAME}-postgres-12
@@ -42,6 +43,7 @@ services:
             - ./.docker/postgres/data:/var/lib/postgresql/data
         ports:
             - "${DOCKER_POSTGRES_PORT}:5432"
+        command: -p ${DOCKER_POSTGRES_PORT}
 
     #symfony/mailer
     # mailer:
