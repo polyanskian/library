@@ -69,7 +69,7 @@ class BookApiController extends AbstractController implements ApiAuthenticatedCo
     }
 
     /**
-     * @Route("/{id}/edit", name="api_v1_book_new", methods={"POST"})
+     * @Route("/{id}/edit", name="api_v1_book_edit", methods={"POST"})
      */
     public function edit(Request $request, BookRepository $bookRepository): Response
     {
