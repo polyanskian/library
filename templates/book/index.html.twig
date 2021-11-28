@@ -64,16 +64,22 @@
 {#                    <td>{{ book.id }}</td>#}
                     <td>
                         {% if book.cover  %}
-                            <img class="book-image book-image--list" src="{{ asset("#{dir_upload}/#{book.getCoverPath()}") }}">
+                            <img class="book-image book-image--list" src="{{ asset("#{dir_upload}/#{book.cover}") }}">
                         {% else %}
                             <img class="book-image book-image--list book-image--empty" src="{{ asset('images/book-default.png') }}">
                         {% endif %}
                     </td>
-                    <td>{{ book.name }}</td>
+                    <td>
+                        <a href="{{ path('book_edit', {'id': book.id}) }}">{{ book.name }}</a>
+                    </td>
                     <td>{{ book.author }}</td>
                     <td>
-                        {% if book.file and book.isDownload %}
-                            <a href="{{ asset("#{dir_upload}/#{book.getFilePath()}") }}">Скачать</a>
+                        {% if book.file %}
+                            {% if is_granted('ROLE_ADMIN') %}
+                                {{ include('book/_link_file_admin.html.twig') }}
+                            {% elseif book.isDownload %}
+                                {{ include('book/_link_file.html.twig') }}
+                            {% endif %}
                         {% endif %}
                     </td>
                     <td>{{ book.dateRead ? book.dateRead|date('d.m.Y') : '' }}</td>
@@ -87,7 +93,7 @@
                                 {{ include('book/_delete_form.html.twig', {
                                     'action': path('book_delete', {'id': book.id}),
                                     'token_key': csrf_token("delete-#{book.id}"),
-                                    'question': 'Удалить книгу?',
+                                    'question': "Удалить книгу `#{book.name}`?",
                                     'caption': 'Удалить',
                                 }) }}
                             </div>

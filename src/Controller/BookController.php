@@ -4,14 +4,17 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
+use App\Dto\BookDto;
 use App\Entity\Book;
 use App\Form\BookType;
 use App\Repository\BookRepository;
-use App\Service\FileUploader;
+use App\Service\BookService;
+use App\Service\FlashService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\Filesystem\Filesystem;
+use Symfony\Component\Cache\Adapter\FilesystemAdapter;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Contracts\Cache\ItemInterface;
 use Symfony\Component\Routing\Annotation\Route;
 
 /**
@@ -19,55 +22,67 @@ use Symfony\Component\Routing\Annotation\Route;
  */
 class BookController extends AbstractController
 {
+    private BookService $bookService;
+    private FlashService $notifier;
+
+    public function __construct(BookService $bookService, FlashService $notifier)
+    {
+        $this->bookService = $bookService;
+        $this->notifier = $notifier;
+    }
+
     /**
      * @Route("/", name="book_index", methods={"GET"})
      */
-    public function index(BookRepository $bookRepository): Response
+    public function index(BookRepository $bookRepository, FilesystemAdapter $cache): Response
     {
+        $cacheKey = $this->getParameter('cache.key.book_index');
+
+        $books = $cache->get($cacheKey, function (ItemInterface $item) use ($bookRepository) {
+            $item->expiresAfter(3600);
+            $books = $bookRepository->findByReadingAll();
+
+            return array_map(function (Book $book) {
+                return new BookDto($book->toArray());
+            }, $books);
+        });
+
         return $this->render('book/index.html.twig', [
-            'books' => $bookRepository->findByReadingAll(),
+            'books' => $books,
         ]);
     }
 
     /**
      * @Route("/new", name="book_new", methods={"GET","POST"})
      */
-    public function new(Request $request, FileUploader $fileUploader): Response
+    public function new(Request $request, FilesystemAdapter $cache): Response
     {
-        $book = new Book();
-
-        $form = $this->createForm(BookType::class, $book);
+        $dto = new BookDto();
+        $form = $this->createForm(BookType::class, $dto);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $entityManager = $this->getDoctrine()->getManager();
-            $entityManager->persist($book);
-
-            $fileUploader->setDirUpload($book->getDirUpload());
-
-            // Cover file upload
             $fileCover = $form->get('cover')->getData();
-
-            if ($fileCover) {
-                $coverFileName = $fileUploader->upload($fileCover);
-                $book->setCover($coverFileName);
-            }
-
-            // Book file upload
             $fileBook = $form->get('file')->getData();
 
-            if ($fileBook) {
-                $bookFileName = $fileUploader->upload($fileBook);
-                $book->setFile($bookFileName);
-            }
+            $book = (new Book())
+                ->setName($dto->name)
+                ->setAuthor($dto->author)
+                ->setDateRead($dto->dateRead)
+                ->setIsDownload($dto->isDownload)
+            ;
 
-            $entityManager->flush();
+            $this->bookService->add($book, $fileCover, $fileBook);
 
+            $cacheKey = $this->getParameter('cache.key.book_index');
+            $cache->delete($cacheKey);
+
+            $this->notifier->ok('Книга добавлена');
             return $this->redirectToRoute('book_edit', ['id' => $book->getId()], Response::HTTP_SEE_OTHER);
         }
 
         return $this->renderForm('book/new.html.twig', [
-            'book' => $book,
+            'book' => $dto,
             'form' => $form,
         ]);
     }
@@ -75,53 +90,34 @@ class BookController extends AbstractController
     /**
      * @Route("/{id}/edit", name="book_edit", methods={"GET","POST"})
      */
-    public function edit(Book $book, Request $request, FileUploader $fileUploader, Filesystem $fs): Response
+    public function edit(Request $request, Book $book, FilesystemAdapter $cache): Response
     {
-        $form = $this->createForm(BookType::class, $book);
+        $dto = new BookDto($book->toArray());
+        $form = $this->createForm(BookType::class, $dto);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $fileUploader->setDirUpload($book->getDirUpload());
-
-            // Cover file upload
             $fileCover = $form->get('cover')->getData();
-
-            if ($fileCover) {
-                if ($book->getCover()) {
-                    $pathOldCover = $fileUploader->getPathFile($book->getCover());
-
-                    if ($fs->exists($pathOldCover)) {
-                        $fs->remove($pathOldCover);
-                    }
-                }
-
-                $coverFileName = $fileUploader->upload($fileCover);
-                $book->setCover($coverFileName);
-            }
-
-            // Book file upload
             $fileBook = $form->get('file')->getData();
 
-            if ($fileBook) {
-                if ($book->getFile()) {
-                    $pathOldBook = $fileUploader->getPathFile($book->getFile());
+            $book
+                ->setName($dto->name)
+                ->setAuthor($dto->author)
+                ->setDateRead($dto->dateRead)
+                ->setIsDownload($dto->isDownload)
+            ;
 
-                    if ($fs->exists($pathOldBook)) {
-                        $fs->remove($pathOldBook);
-                    }
-                }
+            $this->bookService->edit($book, $fileCover, $fileBook);
 
-                $bookFileName = $fileUploader->upload($fileBook);
-                $book->setFile($bookFileName);
-            }
+            $cacheKey = $this->getParameter('cache.key.book_index');
+            $cache->delete($cacheKey);
 
-            $this->getDoctrine()->getManager()->flush();
-
+            $this->notifier->ok('Изменения сохранены');
             return $this->redirectToRoute('book_edit', ['id' => $book->getId()], Response::HTTP_SEE_OTHER);
         }
 
         return $this->renderForm('book/edit.html.twig', [
-            'book' => $book,
+            'book' => $dto,
             'form' => $form,
         ]);
     }
@@ -129,18 +125,14 @@ class BookController extends AbstractController
     /**
      * @Route("/{id}/delete", name="book_delete", methods={"POST"})
      */
-    public function delete(Book $book, Request $request, Filesystem $fs): Response
+    public function delete(Request $request, Book $book): Response
     {
         $token = $request->request->get('_token');
         $tokenKey = "delete-{$book->getId()}";
 
         if ($this->isCsrfTokenValid($tokenKey, $token)) {
-            $pathDir = "{$this->getParameter('path_dir_upload')}/{$book->getDirUpload()}";
-            $fs->remove($pathDir);
-
-            $entityManager = $this->getDoctrine()->getManager();
-            $entityManager->remove($book);
-            $entityManager->flush();
+            $this->bookService->remove($book);
+            $this->notifier->ok("Книга удалена `{$book->getName()}`");
         }
 
         return $this->redirectToRoute('book_index', [], Response::HTTP_SEE_OTHER);
@@ -149,20 +141,14 @@ class BookController extends AbstractController
     /**
      * @Route("/{id}/delete-cover", name="book_delete_cover", methods={"POST"})
      */
-    public function deleteCover(Book $book, Request $request, FileUploader $fileUploader): Response
+    public function deleteCover(Request $request, Book $book): Response
     {
         $token = $request->request->get('_token');
         $tokenKey = "delete_cover-{$book->getId()}";
 
         if ($this->isCsrfTokenValid($tokenKey, $token)) {
-            $cover = $book->getCover();
-
-            if ($cover) {
-                $fileUploader->setDirUpload($book->getDirUpload());
-                $fileUploader->deleteFile($cover);
-                $book->setCover(null);
-                $this->getDoctrine()->getManager()->flush();
-            }
+            $this->bookService->deleteCover($book);
+            $this->notifier->ok('Обложка удалена');
         }
 
         return $this->redirectToRoute('book_edit', ['id' => $book->getId()], Response::HTTP_SEE_OTHER);
@@ -171,20 +157,14 @@ class BookController extends AbstractController
     /**
      * @Route("/{id}/delete-file", name="book_delete_file", methods={"POST"})
      */
-    public function deleteFile(Book $book, Request $request, FileUploader $fileUploader): Response
+    public function deleteFile(Request $request, Book $book): Response
     {
         $token = $request->request->get('_token');
         $tokenKey = "delete_file-{$book->getId()}";
 
         if ($this->isCsrfTokenValid($tokenKey, $token)) {
-            $file = $book->getFile();
-
-            if ($file) {
-                $fileUploader->setDirUpload($book->getDirUpload());
-                $fileUploader->deleteFile($file);
-                $book->setFile(null);
-                $this->getDoctrine()->getManager()->flush();
-            }
+            $this->notifier->ok('Файл книги удален');
+            $this->bookService->deleteFile($book);
         }
 
         return $this->redirectToRoute('book_edit', ['id' => $book->getId()], Response::HTTP_SEE_OTHER);

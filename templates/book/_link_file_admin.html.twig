@@ -1,0 +1,5 @@
+{% if book.isDownload %}
+    {{ include('book/_link_file.html.twig') }}
+{% else %}
+    {{ include('book/_link_file.html.twig', {'class': 'text-secondary'}) }}
+{% endif %}

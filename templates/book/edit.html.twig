@@ -21,6 +21,7 @@
         </ul>
 
         <div class="text-end mb-3">
+            <a class="btn btn-outline-success" href="{{ path('book_new') }}">Добавить книгу</a>
             <a class="btn btn-outline-secondary" href="{{ path('book_index') }}">Отмена</a>
 
             <div class="d-inline-block">
@@ -34,36 +35,42 @@
             </div>
         </div>
 
-        <div class="d-flex">
-            <div class="book-image">
-                {% if book.cover %}
-                    <img class="w-100" src="{{ asset("#{dir_upload}/#{book.getCoverPath()}") }}">
+        <div class="row">
+            <div class="col-4">
+                <div class="book-image mb-4">
+                    {% if book.cover %}
+                        <img class="w-100" src="{{ asset("#{dir_upload}/#{book.cover}") }}">
 
-                    {{ include('book/_delete_form.html.twig', {
-                        'action': path('book_delete_cover', {'id': book.id}),
-                        'token_key': csrf_token("delete_cover-#{book.id}"),
-                        'question': 'Удалить обложку?',
-                        'caption': 'Удалить обложку',
-                    }) }}
-                {% endif %}
+                        {{ include('book/_delete_form.html.twig', {
+                            'action': path('book_delete_cover', {'id': book.id}),
+                            'token_key': csrf_token("delete_cover-#{book.id}"),
+                            'question': 'Удалить обложку?',
+                            'caption': 'Удалить обложку',
+                        }) }}
+                    {% endif %}
+                </div>
+
+                <div>
+                    {% if book.file %}
+                        <div class="mb-2">
+                            <div class="badge bg-secondary">{{ book.file }}</div>
+                            <a href="/{{ "#{dir_upload}/#{book.file}" }}">Скачать</a>
+                        </div>
+
+                        {{ include('book/_delete_form.html.twig', {
+                            'action': path('book_delete_file', {'id': book.id}),
+                            'token_key': csrf_token("delete_file-#{book.id}"),
+                            'question': 'Удалить файл книги?',
+                            'caption': 'Удалить файл книги',
+                        }) }}
+                    {% endif %}
+                </div>
             </div>
-            <div>
-                {% if book.file %}
-                    <div>Файл книги: {{ book.file }}</div>
-                    <a href="/{{ "#{dir_upload}/#{book.getFilePath()}" }}">Скачать</a>
-
-                    {{ include('book/_delete_form.html.twig', {
-                        'action': path('book_delete_file', {'id': book.id}),
-                        'token_key': csrf_token("delete_file-#{book.id}"),
-                        'question': 'Удалить файл книги?',
-                        'caption': 'Удалить файл книги',
-                    }) }}
-                {% endif %}
+            <div class="col-8">
+                {{ include('book/_form.html.twig', {
+                    'book': book,
+                }) }}
             </div>
         </div>
-
-        {{ include('book/_form.html.twig', {
-            'book': book,
-        }) }}
     </div>
 {% endblock %}

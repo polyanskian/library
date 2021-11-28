@@ -1,3 +1,6 @@
+console:
+	docker exec -it library-php7.4 bash
+
 demo:
 	docker-compose up -d --build
 	docker exec -t library-php7.4 composer i

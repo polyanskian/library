@@ -4,13 +4,16 @@
 # Put parameters here that don't need to change on each machine where the app is deployed
 # https://symfony.com/doc/current/best_practices.html#use-parameters-for-application-configuration
 parameters:
-    dir_upload: 'uploads'
-    path_dir_upload: '%kernel.project_dir%/public/%dir_upload%'
+    dir.upload: 'uploads'
+    url.upload: 'http://library.localhost/%dir.upload%'
+    path.dir_upload: '%kernel.project_dir%/public/%dir.upload%'
+
     mailer_user: 'test@test.test'
 
     tokens:
-        client1: pass1
-        client2: pass2
+        client1: 'pass1'
+
+    cache.key.book_index: 'book_index'
 
 services:
     # default configuration for services in *this* file
@@ -33,9 +36,15 @@ services:
 
     App\Service\FileUploader:
         arguments:
-            $pathDirBase: '%path_dir_upload%'
+            $pathDirBase: '%path.dir_upload%'
             $dirUpload: ''
 
     App\EventSubscriber\TokenSubscriber:
         arguments:
             $tokens: '%tokens%'
+
+    Symfony\Component\Cache\Adapter\FilesystemAdapter:
+        arguments:
+            $namespace: 'fs_cache'
+            $defaultLifetime: 3600
+            $directory: '%kernel.project_dir%/var/cache'
