@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Entity;
 
+use DateTimeInterface;
 use App\Repository\BookRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Mapping\ClassMetadata;
@@ -46,9 +47,9 @@ class Book
     private ?string $file;
 
     /**
-     * @ORM\Column(type="datetime")
+     * @ORM\Column(type="datetime", nullable=true)
      */
-    private \DateTimeInterface $date_read;
+    private ?DateTimeInterface $date_read;
 
     /**
      * @ORM\Column(type="boolean", options={"default" = 0})
@@ -75,10 +76,6 @@ class Book
     public static function loadValidatorMetadata(ClassMetadata $metadata): void
     {
         $metadata->addPropertyConstraint('name', new NotBlank());
-
-        $metadata->addPropertyConstraint('date_read', new NotBlank());
-        $metadata->addPropertyConstraint('date_read', new Type(\DateTime::class));
-
         $metadata->addPropertyConstraint('author', new NotBlank());
     }
 
@@ -131,16 +128,12 @@ class Book
         return $this;
     }
 
-    public function getDateRead(): \DateTimeInterface
+    public function getDateRead(): ?DateTimeInterface
     {
-        if (!isset($this->date_read)) {
-            $this->date_read = new \DateTime();
-        }
-
         return $this->date_read;
     }
 
-    public function setDateRead(\DateTimeInterface $date_read): self
+    public function setDateRead(?DateTimeInterface $date_read): self
     {
         $this->date_read = $date_read;
         return $this;
