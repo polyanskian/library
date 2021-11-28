@@ -24,7 +24,7 @@ class Book
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
      */
-    private int $id;
+    private ?int $id = null;
 
     /**
      * @ORM\Column(type="string", length=255)
@@ -79,7 +79,7 @@ class Book
         $metadata->addPropertyConstraint('author', new NotBlank());
     }
 
-    public function getId(): int
+    public function getId(): ?int
     {
         return $this->id;
     }
