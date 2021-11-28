@@ -33,6 +33,29 @@ class BookRepository extends ServiceEntityRepository
             ;
     }
 
+    public function findExistsBook(string $name, string $author): ?Book
+    {
+        return $this->findOneBy([
+            'name' => $name,
+            'author' => $author,
+        ]);
+    }
+
+    public function findExistsBookNotId(string $name, string $author, int $notId): ?Book
+    {
+        return $this->createQueryBuilder('b')
+            ->andWhere('b.id != :id')
+            ->andWhere('b.name = :name')
+            ->andWhere('b.author = :author')
+            ->setParameters([
+                'name' => $name,
+                'author' => $author,
+                'id' => $notId
+            ])
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
+
     // /**
     //  * @return Book[] Returns an array of Book objects
     //  */
