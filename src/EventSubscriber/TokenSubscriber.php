@@ -26,7 +26,7 @@ class TokenSubscriber implements EventSubscriberInterface
         }
 
         if ($controller instanceof ApiAuthenticatedControllerInterface) {
-            $token = $event->getRequest()->query->get('api_key');
+            $token = $event->getRequest()->headers->get('X-AUTH-TOKEN');
 
             if (!in_array($token, $this->tokens)) {
                 throw new AccessDeniedHttpException('This action needs a valid token!');
