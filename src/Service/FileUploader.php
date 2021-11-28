@@ -33,8 +33,16 @@ class FileUploader
 
     public function deleteFile(string $fileName): void
     {
+        if (!$fileName) {
+            throw new \Exception("Empty file name");
+        }
+
+        $fileName = basename($fileName);
         $path = $this->getPathFile($fileName);
-        $this->fs->remove($path);
+
+        if ($this->fs->exists($path)) {
+            $this->fs->remove($path);
+        }
     }
 
     public function getPathFile(string $fileName): string
