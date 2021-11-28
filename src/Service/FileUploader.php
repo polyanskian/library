@@ -28,7 +28,7 @@ class FileUploader
 
         $this->moveFile($fileName, $dir, $file);
 
-        return $fileName;
+        return "{$this->getDirUpload()}/$fileName";
     }
 
     public function deleteFile(string $fileName): void
