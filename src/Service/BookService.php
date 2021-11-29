@@ -49,15 +49,18 @@ class BookService
 
     public function remove(Book $book)
     {
+        $this->entityManager->remove($book);
+        $this->entityManager->flush();
+    }
+
+    public function removeData($book)
+    {
         $fileUploader = $this->configureFileUploader($book);
         $dir = $fileUploader->getPathUploadDir();
 
         if ($this->fs->exists($dir)) {
             $this->fs->remove($dir);
         }
-
-        $this->entityManager->remove($book);
-        $this->entityManager->flush();
     }
 
     public function deleteCover(Book $book)
