@@ -55,7 +55,7 @@ class BookController extends AbstractController
     /**
      * @Route("/new", name="book_new", methods={"GET","POST"})
      */
-    public function new(Request $request, FilesystemAdapter $cache): Response
+    public function new(Request $request): Response
     {
         $dto = new BookDto();
         $form = $this->createForm(BookType::class, $dto);
@@ -74,9 +74,6 @@ class BookController extends AbstractController
 
             $this->bookService->add($book, $fileCover, $fileBook);
 
-            $cacheKey = $this->getParameter('cache.key.book_index');
-            $cache->delete($cacheKey);
-
             $this->notifier->ok('Книга добавлена');
             return $this->redirectToRoute('book_edit', ['id' => $book->getId()], Response::HTTP_SEE_OTHER);
         }
@@ -90,7 +87,7 @@ class BookController extends AbstractController
     /**
      * @Route("/{id}/edit", name="book_edit", methods={"GET","POST"})
      */
-    public function edit(Request $request, Book $book, FilesystemAdapter $cache): Response
+    public function edit(Request $request, Book $book): Response
     {
         $dto = new BookDto($book->toArray());
         $form = $this->createForm(BookType::class, $dto);
@@ -108,9 +105,6 @@ class BookController extends AbstractController
             ;
 
             $this->bookService->edit($book, $fileCover, $fileBook);
-
-            $cacheKey = $this->getParameter('cache.key.book_index');
-            $cache->delete($cacheKey);
 
             $this->notifier->ok('Изменения сохранены');
             return $this->redirectToRoute('book_edit', ['id' => $book->getId()], Response::HTTP_SEE_OTHER);

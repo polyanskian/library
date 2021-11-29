@@ -34,14 +34,18 @@ services:
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones
 
+    App\EventSubscriber\TokenSubscriber:
+        arguments:
+            $tokens: '%tokens%'
+
+    App\EventSubscriber\BookEntityEventSubscriber:
+        arguments:
+            $cacheKey: '%cache.key.book_index%'
+
     App\Service\FileUploader:
         arguments:
             $pathDirBase: '%path.dir_upload%'
             $dirUpload: ''
-
-    App\EventSubscriber\TokenSubscriber:
-        arguments:
-            $tokens: '%tokens%'
 
     Symfony\Component\Cache\Adapter\FilesystemAdapter:
         arguments:
