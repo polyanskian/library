@@ -36,7 +36,7 @@ class BookApiController extends AbstractController implements ApiAuthenticatedCo
         $books = $bookRepository->findByReadingAll();
 
         $dataBooks = array_map(function (Book $book) {
-            $urlUpload = $this->getParameter('url.upload');
+            $urlUpload = $this->getParameter('url.web');
             return new BookSerializeDto($book->toArray(), $urlUpload);
         }, $books);
 
@@ -63,7 +63,7 @@ class BookApiController extends AbstractController implements ApiAuthenticatedCo
 
         $this->bookService->add($book);
 
-        $urlUpload = $this->getParameter('url.upload');
+        $urlUpload = $this->getParameter('url.web');
         $json = $this->serializer->serialize(new BookSerializeDto($book->toArray(), $urlUpload), 'json');
         return JsonResponse::fromJsonString($json);
     }
@@ -93,7 +93,7 @@ class BookApiController extends AbstractController implements ApiAuthenticatedCo
 
         $this->bookService->edit($book);
 
-        $urlUpload = $this->getParameter('url.upload');
+        $urlUpload = $this->getParameter('url.web');
         $json = $this->serializer->serialize(new BookSerializeDto($book->toArray(), $urlUpload), 'json');
         return JsonResponse::fromJsonString($json);
     }

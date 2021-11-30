@@ -64,7 +64,7 @@
 {#                    <td>{{ book.id }}</td>#}
                     <td>
                         {% if book.cover  %}
-                            <img class="book-image book-image--list" src="{{ asset("#{dir_upload}/#{book.cover}") }}">
+                            <img class="book-image book-image--list" src="{{ asset(book.cover) }}">
                         {% else %}
                             <img class="book-image book-image--list book-image--empty" src="{{ asset('images/book-default.png') }}">
                         {% endif %}

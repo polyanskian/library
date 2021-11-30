@@ -4,9 +4,14 @@
 # Put parameters here that don't need to change on each machine where the app is deployed
 # https://symfony.com/doc/current/best_practices.html#use-parameters-for-application-configuration
 parameters:
+    path.web: '%kernel.project_dir%/public'
+
     dir.upload: 'uploads'
-    url.upload: 'http://library.localhost/%dir.upload%'
-    path.dir_upload: '%kernel.project_dir%/public/%dir.upload%'
+    dir.thumb: 'thumbs'
+
+    url.web: 'http://library.localhost'
+
+    path.dir_upload: '%path.web%/%dir.upload%'
 
     mailer_user: 'test@test.test'
 
@@ -35,20 +40,19 @@ services:
     # please note that last definitions always *replace* previous ones
 
     App\EventSubscriber\TokenSubscriber:
-        arguments:
-            $tokens: '%tokens%'
+        $tokens: '%tokens%'
 
     App\EventSubscriber\BookEntityEventSubscriber:
-        arguments:
-            $cacheKey: '%cache.key.book_index%'
+        $cacheKey: '%cache.key.book_index%'
+
+    App\Service\BookService:
+        $dirUpload: '%dir.upload%'
 
     App\Service\FileUploader:
-        arguments:
-            $pathDirBase: '%path.dir_upload%'
-            $dirUpload: ''
+        $pathWeb: '%path.web%'
+        $dirUpload: '%dir.upload%'
 
     Symfony\Component\Cache\Adapter\FilesystemAdapter:
-        arguments:
-            $namespace: 'fs_cache'
-            $defaultLifetime: 3600
-            $directory: '%kernel.project_dir%/var/cache'
+        $namespace: 'fs_cache'
+        $defaultLifetime: 3600
+        $directory: '%kernel.project_dir%/var/cache'

@@ -10,17 +10,20 @@ use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 class BookService
 {
+    private string $dirUpload;
     private EntityManagerInterface $entityManager;
     private BookRepository $repository;
     private FileUploader $fileUploader;
     private Filesystem $fs;
 
     public function __construct(
+        string $dirUpload,
         EntityManagerInterface $entityManager,
         BookRepository $repository,
         FileUploader $fileUploader,
         Filesystem $fs
     ) {
+        $this->dirUpload = $dirUpload;
         $this->entityManager = $entityManager;
         $this->repository = $repository;
         $this->fileUploader = $fileUploader;
@@ -128,7 +131,7 @@ class BookService
             throw new \Exception("Empty book id");
         }
 
-        $this->fileUploader->setDirUpload("book/$id");
+        $this->fileUploader->setDirUpload("$this->dirUpload/book/$id");
         return $this->fileUploader;
     }
 

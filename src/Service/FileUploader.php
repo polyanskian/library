@@ -10,13 +10,13 @@ use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 class FileUploader
 {
-    private string $pathDirBase;
+    private string $pathWeb;
     private string $dirUpload;
     private Filesystem $fs;
 
-    public function __construct(string $pathDirBase, string $dirUpload, Filesystem $fs)
+    public function __construct(string $pathWeb, string $dirUpload, Filesystem $fs)
     {
-        $this->pathDirBase = $pathDirBase;
+        $this->pathWeb = $pathWeb;
         $this->dirUpload = $dirUpload;
         $this->fs = $fs;
     }
@@ -52,7 +52,7 @@ class FileUploader
 
     public function getPathUploadDir(): string
     {
-        return "$this->pathDirBase/{$this->getDirUpload()}";
+        return "$this->pathWeb/{$this->getDirUpload()}";
     }
 
     public function getDirUpload(): string
@@ -84,24 +84,10 @@ class FileUploader
 
     protected function makeFileName(UploadedFile $file): string
     {
-        /**
-         * https://www.php.net/manual/ru/function.pathinfo.php
-         * pathinfo() учитывает настройки локали, поэтому для корректной обработки пути с многобайтными символами
-         * должна быть установлена соответствующая локаль с помощью функции setlocale().
-         *
-         * Имя файла с многобайтными символами, возвращает пустым
-         * На данный момент проблему решил так
-         */
-        $locale = setlocale(LC_ALL, 0);
-        setlocale(LC_ALL,'en_US.UTF-8');
-        $rawFileName = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
-        setlocale(LC_ALL, $locale);
-
-        $fileName = $rawFileName;
+        $fileName = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
         $ext = $file->guessExtension();
 
         $fileName = $this->getVerifiedFileName($fileName, $ext);
-
         return "$fileName.$ext";
     }
 

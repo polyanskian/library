@@ -39,7 +39,7 @@
             <div class="col-4">
                 <div class="book-image mb-4">
                     {% if book.cover %}
-                        <img class="w-100" src="{{ asset("#{dir_upload}/#{book.cover}") }}">
+                        <img class="w-100" src="{{ asset(book.cover) }}">
 
                         {{ include('book/_delete_form.html.twig', {
                             'action': path('book_delete_cover', {'id': book.id}),
@@ -54,7 +54,7 @@
                     {% if book.file %}
                         <div class="mb-2">
                             <div class="badge bg-secondary">{{ book.file }}</div>
-                            <a href="/{{ "#{dir_upload}/#{book.file}" }}">Скачать</a>
+                            {{ include('book/_link_file.html.twig') }}
                         </div>
 
                         {{ include('book/_delete_form.html.twig', {
