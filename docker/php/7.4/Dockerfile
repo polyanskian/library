@@ -1,6 +1,7 @@
 FROM php:7.4-fpm-alpine
 
 RUN apk add --update \
+    bash \
     freetype-dev \
     libjpeg-turbo-dev \
     libpng-dev \
