@@ -13,6 +13,7 @@
         "doctrine/doctrine-migrations-bundle": "^3.2",
         "doctrine/orm": "^2.10",
         "friendsofsymfony/user-bundle": "dev-master",
+        "gumlet/php-image-resize": "^2.0",
         "jms/serializer-bundle": "^4.0",
         "phpdocumentor/reflection-docblock": "^5.3",
         "sensio/framework-extra-bundle": "^6.1",

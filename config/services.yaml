@@ -54,3 +54,11 @@ services:
         $namespace: 'fs_cache'
         $defaultLifetime: 3600
         $directory: '%kernel.project_dir%/var/cache'
+
+    App\Service\ImageResizer\ImageResizerInterface:
+        '@App\Service\ImageResizer\ImageResizer'
+
+    App\Service\ImageThumb:
+        $pathWeb: '%path.web%'
+        $dirThumb: '%dir.thumb%'
+        $resizer: '@App\Service\ImageResizer\ImageResizerInterface'
