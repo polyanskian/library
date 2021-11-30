@@ -3,9 +3,6 @@ twig:
     form_themes:
         - 'bootstrap_5_layout.html.twig'
 
-    globals:
-        dir_upload: '%dir.upload%'
-
 when@test:
     twig:
         strict_variables: true

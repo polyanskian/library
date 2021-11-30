@@ -11,8 +11,6 @@ parameters:
 
     url.web: 'http://library.localhost'
 
-    path.dir_upload: '%path.web%/%dir.upload%'
-
     mailer_user: 'test@test.test'
 
     tokens:
