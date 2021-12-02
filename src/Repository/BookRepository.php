@@ -27,10 +27,12 @@ class BookRepository extends ServiceEntityRepository
     public function findByReadingAll(): array
     {
         return $this->createQueryBuilder('b')
-            ->orderBy('b.date_read', 'DESC')
+            ->addSelect('CASE WHEN b.date_read IS NULL THEN 1 ELSE 0 END as HIDDEN _sort')
+            ->orderBy('_sort', 'ASC')
+            ->addOrderBy('b.date_read', 'DESC')
+            ->addOrderBy('b.name', 'DESC')
             ->getQuery()
-            ->getResult()
-            ;
+            ->getResult();
     }
 
     public function findExistsBook(string $name, string $author): ?Book
