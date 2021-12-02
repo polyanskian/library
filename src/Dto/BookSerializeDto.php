@@ -5,8 +5,6 @@ declare(strict_types=1);
 namespace App\Dto;
 
 use DateTimeInterface;
-use Symfony\Component\Validator\Constraints\NotBlank;
-use Symfony\Component\Validator\Mapping\ClassMetadata;
 use JMS\Serializer\Annotation as JMS;
 
 class BookSerializeDto
@@ -42,12 +40,6 @@ class BookSerializeDto
         }
 
         $this->urlUpload = $urlUpload;
-    }
-
-    public static function loadValidatorMetadata(ClassMetadata $metadata): void
-    {
-        $metadata->addPropertyConstraint('name', new NotBlank());
-        $metadata->addPropertyConstraint('author', new NotBlank());
     }
 
     public function getCover(): ?string

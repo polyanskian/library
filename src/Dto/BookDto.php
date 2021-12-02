@@ -4,10 +4,7 @@ declare(strict_types=1);
 
 namespace App\Dto;
 
-use JMS\Serializer\Annotation as JMS;
 use DateTimeInterface;
-use Symfony\Component\Validator\Constraints\NotBlank;
-use Symfony\Component\Validator\Mapping\ClassMetadata;
 
 class BookDto
 {
@@ -26,11 +23,5 @@ class BookDto
                 $this->$name = $val;
             }
         }
-    }
-
-    public static function loadValidatorMetadata(ClassMetadata $metadata): void
-    {
-        $metadata->addPropertyConstraint('name', new NotBlank());
-        $metadata->addPropertyConstraint('author', new NotBlank());
     }
 }
