@@ -8,17 +8,19 @@ use App\Tests\CustomWebTestCase;
 
 class BookControllerTest extends CustomWebTestCase
 {
+    private const URL = '/book/new';
+
     public function testOkAccess(): void
     {
         $client = $this->getAuthorizedClient();
-        $client->request('GET', '/book/new');
+        $client->request('GET', self::URL);
         self::assertResponseIsSuccessful();
     }
 
     public function testErrorAccess(): void
     {
         $client = static::createClient();
-        $client->request('GET', '/book/new');
+        $client->request('GET', self::URL);
         self::assertResponseRedirects('http://localhost/login', 302);
     }
 }
