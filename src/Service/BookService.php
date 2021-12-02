@@ -4,6 +4,7 @@ namespace App\Service;
 
 use App\Entity\Book;
 use Doctrine\ORM\EntityManagerInterface;
+use Exception;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 
@@ -26,6 +27,11 @@ class BookService
         $this->fs = $fs;
     }
 
+    public function createBookEntity(): Book
+    {
+        return new Book();
+    }
+
     public function add(Book $book, ?UploadedFile $fileCover = null, ?UploadedFile $fileBook = null): void
     {
         $this->edit($book, $fileCover, $fileBook);
@@ -42,13 +48,13 @@ class BookService
         $this->entityManager->flush();
     }
 
-    public function remove(Book $book)
+    public function remove(Book $book): void
     {
         $this->entityManager->remove($book);
         $this->entityManager->flush();
     }
 
-    public function removeData($book)
+    public function removeData($book): void
     {
         $fileUploader = $this->configureFileUploader($book);
         $dir = $fileUploader->getPathUploadDir();
@@ -58,7 +64,7 @@ class BookService
         }
     }
 
-    public function deleteCover(Book $book)
+    public function deleteCover(Book $book): void
     {
         $cover = $book->getCover();
 
@@ -71,7 +77,7 @@ class BookService
         }
     }
 
-    public function deleteFile(Book $book)
+    public function deleteFile(Book $book): void
     {
         $file = $book->getFile();
 
@@ -120,7 +126,7 @@ class BookService
         $id = $book->getId();
 
         if (!$id) {
-            throw new \Exception("Empty book id");
+            throw new Exception("Empty book id");
         }
 
         $this->fileUploader->setDirUpload("$this->dirUpload/book/$id");
