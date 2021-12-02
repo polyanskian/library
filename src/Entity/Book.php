@@ -7,6 +7,9 @@ namespace App\Entity;
 use App\Repository\BookRepository;
 use Doctrine\ORM\Mapping as ORM;
 use DateTimeInterface;
+use Symfony\Component\Validator\Mapping\ClassMetadata;
+use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 /**
  * @ORM\Entity(repositoryClass=BookRepository::class)
@@ -46,12 +49,12 @@ class Book
     /**
      * @ORM\Column(type="datetime", nullable=true)
      */
-    private ?DateTimeInterface $date_read;
+    private ?DateTimeInterface $date_read = null;
 
     /**
      * @ORM\Column(type="boolean", options={"default" = 0})
      */
-    private bool $is_download;
+    private bool $is_download = false;
 
     public function toArray(): array
     {
@@ -64,6 +67,17 @@ class Book
             'dateRead' => $this->getDateRead(),
             'isDownload' => $this->getIsDownload(),
         ];
+    }
+
+    public static function loadValidatorMetadata(ClassMetadata $metadata): void
+    {
+        $metadata->addPropertyConstraint('name', new Assert\NotBlank());
+        $metadata->addPropertyConstraint('author', new Assert\NotBlank());
+
+        $metadata->addConstraint(new UniqueEntity([
+            'fields' => ['name', 'author'],
+            'errorPath' => 'name',
+        ]));
     }
 
     public function getId(): ?int
