@@ -2,24 +2,23 @@
 
 namespace App\Tests\Controller\BookController;
 
-use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
+use App\Tests\CustomApiWebTestCase;
 
-class BookApiControllerTest extends WebTestCase
+class BookApiControllerTest extends CustomApiWebTestCase
 {
+    private const URL = '/api/v1/books';
+
     public function testAccess(): void
     {
-        $client = static::createClient([], [
-            'HTTP_X_AUTH_TOKEN' => 'pass1',
-        ]);
-
-        $client->request('GET', '/api/v1/books');
+        $client = $this->getAuthorizedClient();
+        $client->request('GET', self::URL);
         self::assertResponseIsSuccessful();
     }
 
     public function testNotAccess(): void
     {
         $client = static::createClient();
-        $client->request('GET', '/api/v1/books');
+        $client->request('GET', self::URL);
         self::assertResponseStatusCodeSame(403);
     }
 }
