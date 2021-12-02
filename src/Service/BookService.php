@@ -3,7 +3,6 @@
 namespace App\Service;
 
 use App\Entity\Book;
-use App\Repository\BookRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
@@ -12,20 +11,17 @@ class BookService
 {
     private string $dirUpload;
     private EntityManagerInterface $entityManager;
-    private BookRepository $repository;
     private FileUploader $fileUploader;
     private Filesystem $fs;
 
     public function __construct(
         string $dirUpload,
         EntityManagerInterface $entityManager,
-        BookRepository $repository,
         FileUploader $fileUploader,
         Filesystem $fs
     ) {
         $this->dirUpload = $dirUpload;
         $this->entityManager = $entityManager;
-        $this->repository = $repository;
         $this->fileUploader = $fileUploader;
         $this->fs = $fs;
     }
@@ -37,10 +33,6 @@ class BookService
 
     public function edit(Book $book, ?UploadedFile $fileCover = null, ?UploadedFile $fileBook = null): void
     {
-        if ($this->isBookExists($book)) {
-            throw new \Exception("Book is exists `name={$book->getName()}, author={$book->getAuthor()}`");
-        }
-
         if ($book->getId() === null) {
             $this->entityManager->persist($book);
         }
@@ -133,14 +125,5 @@ class BookService
 
         $this->fileUploader->setDirUpload("$this->dirUpload/book/$id");
         return $this->fileUploader;
-    }
-
-    private function isBookExists(Book $book): bool
-    {
-        if ($book->getId()) {
-            return (bool) $this->repository->findExistsBookNotId($book->getName(), $book->getAuthor(), $book->getId());
-        }
-
-        return (bool) $this->repository->findExistsBook($book->getName(), $book->getAuthor());
     }
 }
