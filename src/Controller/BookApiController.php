@@ -13,6 +13,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 /**
  * @Route ("/api/v1/books")
@@ -21,15 +22,17 @@ class BookApiController extends AbstractController implements ApiAuthenticatedCo
 {
     private SerializerInterface $serializer;
     private BookService $bookService;
+    private BookRepository $bookRepository;
 
-    public function __construct(BookService $bookService, SerializerInterface $serializer)
+    public function __construct(BookService $bookService, SerializerInterface $serializer, BookRepository $bookRepository)
     {
         $this->bookService = $bookService;
         $this->serializer = $serializer;
+        $this->bookRepository = $bookRepository;
     }
 
     /**
-     * @Route("/", name="api_v1_book_index", methods={"GET"})
+     * @Route("", name="api_v1_book_index", methods={"GET"})
      */
     public function index(BookRepository $bookRepository): Response
     {
@@ -47,19 +50,24 @@ class BookApiController extends AbstractController implements ApiAuthenticatedCo
     /**
      * @Route("/add", name="api_v1_book_new", methods={"POST"})
      */
-    public function new(Request $request): Response
+    public function new(Request $request, ValidatorInterface $validator): Response
     {
         /**
          * @var $dto BookSerializeDto
          */
         $dto = $this->serializer->deserialize($request->getContent(), BookSerializeDto::class, 'json');
 
-        $book = (new Book())
+        $book = $this->bookService->createBookEntity()
             ->setName($dto->name)
             ->setAuthor($dto->author)
             ->setDateRead($dto->dateRead)
-            ->setIsDownload($dto->isDownload)
-        ;
+            ->setIsDownload($dto->isDownload);
+
+        $errors = $validator->validate($book);
+
+        if (count($errors)) {
+            return $this->json($errors, 422);
+        }
 
         $this->bookService->add($book);
 
@@ -71,30 +79,40 @@ class BookApiController extends AbstractController implements ApiAuthenticatedCo
     /**
      * @Route("/{id}/edit", name="api_v1_book_edit", methods={"POST"})
      */
-    public function edit(Request $request, BookRepository $bookRepository): Response
+    public function edit(Request $request, ValidatorInterface $validator): Response
     {
         /**
          * @var $dto BookSerializeDto
          */
         $dto = $this->serializer->deserialize($request->getContent(), BookSerializeDto::class, 'json');
 
-        $book = ($dto->id) ? $bookRepository->find($dto->id) : null;
-
-        if (!$book) {
-            throw new NotFoundHttpException();
-        }
-
-        $book
+        $book = $this->findBook($dto->id)
             ->setName($dto->name)
             ->setAuthor($dto->author)
             ->setDateRead($dto->dateRead)
-            ->setIsDownload($dto->isDownload)
-        ;
+            ->setIsDownload($dto->isDownload);
+
+        $errors = $validator->validate($book);
+
+        if (count($errors)) {
+            return $this->json($errors, 422);
+        }
 
         $this->bookService->edit($book);
 
         $urlUpload = $this->getParameter('url.web');
         $json = $this->serializer->serialize(new BookSerializeDto($book->toArray(), $urlUpload), 'json');
         return JsonResponse::fromJsonString($json);
+    }
+
+    private function findBook(?int $id): Book
+    {
+        $book = ($id) ? $this->bookRepository->find($id) : null;
+
+        if (!$book) {
+            throw new NotFoundHttpException();
+        }
+
+        return $book;
     }
 }
