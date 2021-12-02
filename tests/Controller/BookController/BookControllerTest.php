@@ -4,12 +4,9 @@ declare(strict_types=1);
 
 namespace App\Tests\Controller\BookController;
 
-use App\Entity\User;
-use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Bundle\FrameworkBundle\KernelBrowser;
-use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
+use App\Tests\CustomWebTestCase;
 
-class BookControllerTest extends WebTestCase
+class BookControllerTest extends CustomWebTestCase
 {
     public function testOkAccess(): void
     {
@@ -23,16 +20,5 @@ class BookControllerTest extends WebTestCase
         $client = static::createClient();
         $client->request('GET', '/book/new');
         self::assertResponseRedirects('http://localhost/login', 302);
-    }
-
-    private function getAuthorizedClient(): KernelBrowser
-    {
-        $client = static::createClient();
-
-        $em = static::getContainer()->get(EntityManagerInterface::class);
-        $repository = $em->getRepository(User::class);
-        $user = $repository->findOneBy(['username' => 'test']);
-
-        return $client->loginUser($user);
     }
 }
