@@ -10,6 +10,7 @@ use App\Form\BookType;
 use App\Repository\BookRepository;
 use App\Service\BookService;
 use App\Service\FlashService;
+use DateTime;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Cache\Adapter\FilesystemAdapter;
 use Symfony\Component\HttpFoundation\Request;
@@ -32,7 +33,7 @@ class BookController extends AbstractController
     }
 
     /**
-     * @Route("/", name="book_index", methods={"GET"})
+     * @Route("", name="book_index", methods={"GET"})
      */
     public function index(BookRepository $bookRepository, FilesystemAdapter $cache): Response
     {
@@ -57,20 +58,15 @@ class BookController extends AbstractController
      */
     public function new(Request $request): Response
     {
-        $dto = new BookDto();
-        $form = $this->createForm(BookType::class, $dto);
+        $book = $this->bookService->createBookEntity();
+        $book->setDateRead(new DateTime());
+
+        $form = $this->createForm(BookType::class, $book);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
             $fileCover = $form->get('cover')->getData();
             $fileBook = $form->get('file')->getData();
-
-            $book = (new Book())
-                ->setName($dto->name)
-                ->setAuthor($dto->author)
-                ->setDateRead($dto->dateRead)
-                ->setIsDownload($dto->isDownload)
-            ;
 
             $this->bookService->add($book, $fileCover, $fileBook);
 
@@ -79,7 +75,7 @@ class BookController extends AbstractController
         }
 
         return $this->renderForm('book/new.html.twig', [
-            'book' => $dto,
+            'book' => new BookDto($book->toArray()),
             'form' => $form,
         ]);
     }
@@ -89,20 +85,12 @@ class BookController extends AbstractController
      */
     public function edit(Request $request, Book $book): Response
     {
-        $dto = new BookDto($book->toArray());
-        $form = $this->createForm(BookType::class, $dto);
+        $form = $this->createForm(BookType::class, $book);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
             $fileCover = $form->get('cover')->getData();
             $fileBook = $form->get('file')->getData();
-
-            $book
-                ->setName($dto->name)
-                ->setAuthor($dto->author)
-                ->setDateRead($dto->dateRead)
-                ->setIsDownload($dto->isDownload)
-            ;
 
             $this->bookService->edit($book, $fileCover, $fileBook);
 
@@ -111,7 +99,7 @@ class BookController extends AbstractController
         }
 
         return $this->renderForm('book/edit.html.twig', [
-            'book' => $dto,
+            'book' => new BookDto($book->toArray()),
             'form' => $form,
         ]);
     }
