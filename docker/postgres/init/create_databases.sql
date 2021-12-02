@@ -1,3 +1,3 @@
 -- Create databases
 CREATE DATABASE "library";
-CREATE DATABASE "library-test";
+CREATE DATABASE "library_test";
