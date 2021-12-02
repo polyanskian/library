@@ -11,12 +11,14 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\DomCrawler\Crawler;
 use Symfony\Component\DomCrawler\Form;
 
-class NewFormTest extends CustomWebTestCase
+class NewWebActionTest extends CustomWebTestCase
 {
-    public function testSubmitOk(): void
+    private const URL = '/book/new';
+
+    public function testOk(): void
     {
         $client = $this->getAuthorizedClient();
-        $crawler = $client->request('GET', '/book/new');
+        $crawler = $client->request('GET', self::URL);
         $form = $this->getForm($crawler);
 
         $client->submit($form, [
@@ -47,7 +49,7 @@ class NewFormTest extends CustomWebTestCase
         $errorSelector = 'input.is-invalid[name="book[name]"]~.invalid-feedback.d-block';
 
         $client = $this->getAuthorizedClient();
-        $crawler = $client->request('GET', '/book/new');
+        $crawler = $client->request('GET', self::URL);
         $form = $this->getForm($crawler);
         $em = static::getContainer()->get(EntityManagerInterface::class);
 
@@ -77,7 +79,7 @@ class NewFormTest extends CustomWebTestCase
         $errorSelector = 'input.is-invalid[name="book[file]"]~.invalid-feedback.d-block';
 
         $client = $this->getAuthorizedClient();
-        $crawler = $client->request('GET', '/book/new');
+        $crawler = $client->request('GET', self::URL);
         $form = $this->getForm($crawler);
 
         $client->submit($form);
@@ -108,7 +110,7 @@ class NewFormTest extends CustomWebTestCase
         $errorSelector = 'input.is-invalid[name="book[cover]"]~.invalid-feedback.d-block';
 
         $client = $this->getAuthorizedClient();
-        $crawler = $client->request('GET', '/book/new');
+        $crawler = $client->request('GET', self::URL);
         $form = $this->getForm($crawler);
 
         $client->submit($form);
@@ -139,7 +141,7 @@ class NewFormTest extends CustomWebTestCase
         $errorSelector = 'input.is-invalid[name="book[author]"]~.invalid-feedback.d-block';
 
         $client = $this->getAuthorizedClient();
-        $crawler = $client->request('GET', '/book/new');
+        $crawler = $client->request('GET', self::URL);
         $form = $this->getForm($crawler);
 
         $client->submit($form);
@@ -161,7 +163,7 @@ class NewFormTest extends CustomWebTestCase
         $errorSelector = 'input.is-invalid[name="book[name]"]~.invalid-feedback.d-block';
 
         $client = $this->getAuthorizedClient();
-        $crawler = $client->request('GET', '/book/new');
+        $crawler = $client->request('GET', self::URL);
         $form = $this->getForm($crawler);
 
         $client->submit($form);
