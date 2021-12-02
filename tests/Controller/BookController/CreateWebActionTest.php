@@ -11,7 +11,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\DomCrawler\Crawler;
 use Symfony\Component\DomCrawler\Form;
 
-class NewWebActionTest extends CustomWebTestCase
+class CreateWebActionTest extends CustomWebTestCase
 {
     private const URL = '/book/new';
 

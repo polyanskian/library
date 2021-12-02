@@ -5,7 +5,7 @@ namespace App\Tests\Controller\BookController;
 use App\Repository\BookRepository;
 use App\Tests\CustomApiWebTestCase;
 
-class NewApiActionTest extends CustomApiWebTestCase
+class CreateApiActionTest extends CustomApiWebTestCase
 {
     private const URL = '/api/v1/books/add';
 
