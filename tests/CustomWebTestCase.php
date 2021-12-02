@@ -1,12 +1,15 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Tests;
 
 use App\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\KernelBrowser;
+use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
-abstract class CustomWebTestCase extends \Symfony\Bundle\FrameworkBundle\Test\WebTestCase
+abstract class CustomWebTestCase extends WebTestCase
 {
     protected function getAuthorizedClient(): KernelBrowser
     {
