@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Form;
 
-use App\Dto\BookDto;
+use App\Entity\Book;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
@@ -57,7 +57,6 @@ class BookType extends AbstractType
                         'mimeTypes' => [
                             'application/epub+zip',
                             'text/plain',
-//                            'application/x-fictionbook', 'application/x-fictionbook+xml',
                         ],
                         'mimeTypesMessage' => 'Доступные форматы для загрузки: epub, txt',
                     ])
@@ -73,7 +72,7 @@ class BookType extends AbstractType
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
-            'data_class' => BookDto::class,
+            'data_class' => Book::class,
         ]);
     }
 }
