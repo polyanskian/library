@@ -11,7 +11,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\DomCrawler\Crawler;
 use Symfony\Component\DomCrawler\Form;
 
-class BookNewFormTest extends CustomWebTestCase
+class NewFormTest extends CustomWebTestCase
 {
     public function testSubmitOk(): void
     {
