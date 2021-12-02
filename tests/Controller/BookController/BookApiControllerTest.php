@@ -4,7 +4,7 @@ namespace App\Tests\Controller\BookController;
 
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
-class BookApiController extends WebTestCase
+class BookApiControllerTest extends WebTestCase
 {
     public function testAccess(): void
     {
