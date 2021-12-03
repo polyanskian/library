@@ -40,8 +40,8 @@ class ImageThumb
     
     public function getResize(string $path, int $width = 0, int $height = 0, bool $enlarge = false): string
     {
-        $width = abs($width);
-        $height = abs($height);
+        $width = (int) abs($width);
+        $height = (int) abs($height);
 
         $pathInput = $this->makePathRelative($path);
 
