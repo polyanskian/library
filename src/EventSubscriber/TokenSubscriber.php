@@ -19,6 +19,13 @@ class TokenSubscriber implements EventSubscriberInterface
         $this->tokens = $tokens;
     }
 
+    public static function getSubscribedEvents(): array
+    {
+        return [
+            KernelEvents::CONTROLLER => 'onKernelController',
+        ];
+    }
+
     public function onKernelController(ControllerEvent $event): void
     {
         $controller = $event->getController();
@@ -34,12 +41,5 @@ class TokenSubscriber implements EventSubscriberInterface
                 throw new AccessDeniedHttpException('This action needs a valid token!');
             }
         }
-    }
-
-    public static function getSubscribedEvents(): array
-    {
-        return [
-            KernelEvents::CONTROLLER => 'onKernelController',
-        ];
     }
 }
