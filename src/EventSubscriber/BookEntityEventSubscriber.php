@@ -24,6 +24,15 @@ class BookEntityEventSubscriber implements EventSubscriberInterface
         $this->cacheKey = $cacheKey;
     }
 
+    public function getSubscribedEvents(): array
+    {
+        return [
+            Events::postPersist,
+            Events::postUpdate,
+            Events::preRemove,
+        ];
+    }
+
     public function postPersist(LifecycleEventArgs $event): void
     {
         $entity = $event->getObject();
@@ -50,14 +59,5 @@ class BookEntityEventSubscriber implements EventSubscriberInterface
             $this->bookService->removeData($entity);
             $this->cache->delete($this->cacheKey);
         }
-    }
-
-    public function getSubscribedEvents(): array
-    {
-        return [
-            Events::postPersist,
-            Events::postUpdate,
-            Events::preRemove,
-        ];
     }
 }
