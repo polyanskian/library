@@ -24,7 +24,7 @@ class BookEntityEventSubscriber implements EventSubscriberInterface
         $this->cacheKey = $cacheKey;
     }
 
-    public function postPersist(LifecycleEventArgs $event)
+    public function postPersist(LifecycleEventArgs $event): void
     {
         $entity = $event->getObject();
 
@@ -33,7 +33,7 @@ class BookEntityEventSubscriber implements EventSubscriberInterface
         }
     }
 
-    public function postUpdate(LifecycleEventArgs $event)
+    public function postUpdate(LifecycleEventArgs $event): void
     {
         $entity = $event->getObject();
 
@@ -42,7 +42,7 @@ class BookEntityEventSubscriber implements EventSubscriberInterface
         }
     }
 
-    public function preRemove(LifecycleEventArgs $event)
+    public function preRemove(LifecycleEventArgs $event): void
     {
         $entity = $event->getObject();
 
