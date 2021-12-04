@@ -7,7 +7,9 @@ namespace App\Controller;
 use App\Dto\BookSerializeDto;
 use App\Entity\Book;
 use App\Repository\BookRepository;
+use App\Responce\ErrorApiJsonResponse;
 use App\Service\BookService;
+use Exception;
 use JMS\Serializer\SerializerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -54,10 +56,14 @@ class BookApiController extends AbstractController implements ApiAuthenticatedCo
      */
     public function new(Request $request, ValidatorInterface $validator): Response
     {
-        /**
-         * @var $dto BookSerializeDto
-         */
-        $dto = $this->serializer->deserialize($request->getContent(), BookSerializeDto::class, 'json');
+        try {
+            /**
+             * @var $dto BookSerializeDto
+             */
+            $dto = $this->serializer->deserialize($request->getContent(), BookSerializeDto::class, 'json');
+        } catch (Exception $e) {
+            return new ErrorApiJsonResponse($e->getMessage());
+        }
 
         $book = $this->bookService->createBookEntity()
             ->setName($dto->name)
@@ -83,10 +89,14 @@ class BookApiController extends AbstractController implements ApiAuthenticatedCo
      */
     public function edit(Request $request, ValidatorInterface $validator): Response
     {
-        /**
-         * @var $dto BookSerializeDto
-         */
-        $dto = $this->serializer->deserialize($request->getContent(), BookSerializeDto::class, 'json');
+        try {
+            /**
+             * @var $dto BookSerializeDto
+             */
+            $dto = $this->serializer->deserialize($request->getContent(), BookSerializeDto::class, 'json');
+        } catch (Exception $e) {
+            return new ErrorApiJsonResponse($e->getMessage());
+        }
 
         $book = $this->findBook($dto->id)
             ->setName($dto->name)
