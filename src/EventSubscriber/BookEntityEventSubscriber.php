@@ -56,7 +56,7 @@ class BookEntityEventSubscriber implements EventSubscriberInterface
         $entity = $event->getObject();
 
         if ($entity instanceof Book) {
-            $this->bookService->removeData($entity);
+            $this->bookService->removeBookData($entity);
             $this->cache->delete($this->cacheKey);
         }
     }

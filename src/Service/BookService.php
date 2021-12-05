@@ -34,12 +34,12 @@ class BookService
         return new Book();
     }
 
-    public function add(Book $book, ?UploadedFile $fileCover = null, ?UploadedFile $fileBook = null): void
+    public function addBook(Book $book, ?UploadedFile $fileCover = null, ?UploadedFile $fileBook = null): void
     {
-        $this->edit($book, $fileCover, $fileBook);
+        $this->editBook($book, $fileCover, $fileBook);
     }
 
-    public function edit(Book $book, ?UploadedFile $fileCover = null, ?UploadedFile $fileBook = null): void
+    public function editBook(Book $book, ?UploadedFile $fileCover = null, ?UploadedFile $fileBook = null): void
     {
         if ($book->getId() === null) {
             $this->entityManager->persist($book);
@@ -50,13 +50,13 @@ class BookService
         $this->entityManager->flush();
     }
 
-    public function remove(Book $book): void
+    public function removeBook(Book $book): void
     {
         $this->entityManager->remove($book);
         $this->entityManager->flush();
     }
 
-    public function removeData($book): void
+    public function removeBookData($book): void
     {
         $fileUploader = $this->configureFileUploader($book);
         $dir = $fileUploader->getPathUploadDir();

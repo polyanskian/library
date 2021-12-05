@@ -77,7 +77,7 @@ class BookApiController extends AbstractController implements ApiAuthenticatedCo
             return $this->json($errors, 422);
         }
 
-        $this->bookService->add($book);
+        $this->bookService->addBook($book);
 
         $urlUpload = $this->getParameter('url.web');
         $json = $this->serializer->serialize(new BookSerializeData($book->toArray(), $urlUpload), 'json');
@@ -110,7 +110,7 @@ class BookApiController extends AbstractController implements ApiAuthenticatedCo
             return $this->json($errors, 422);
         }
 
-        $this->bookService->edit($book);
+        $this->bookService->editBook($book);
 
         $urlUpload = $this->getParameter('url.web');
         $json = $this->serializer->serialize(new BookSerializeData($book->toArray(), $urlUpload), 'json');

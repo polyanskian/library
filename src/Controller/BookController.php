@@ -68,7 +68,7 @@ class BookController extends AbstractController
             $fileCover = $form->get('cover')->getData();
             $fileBook = $form->get('file')->getData();
 
-            $this->bookService->add($book, $fileCover, $fileBook);
+            $this->bookService->addBook($book, $fileCover, $fileBook);
 
             $this->notifier->ok('Книга добавлена');
             return $this->redirectToRoute('book_edit', ['id' => $book->getId()], Response::HTTP_SEE_OTHER);
@@ -92,7 +92,7 @@ class BookController extends AbstractController
             $fileCover = $form->get('cover')->getData();
             $fileBook = $form->get('file')->getData();
 
-            $this->bookService->edit($book, $fileCover, $fileBook);
+            $this->bookService->editBook($book, $fileCover, $fileBook);
 
             $this->notifier->ok('Изменения сохранены');
             return $this->redirectToRoute('book_edit', ['id' => $book->getId()], Response::HTTP_SEE_OTHER);
@@ -113,7 +113,7 @@ class BookController extends AbstractController
         $tokenKey = "delete-{$book->getId()}";
 
         if ($this->isCsrfTokenValid($tokenKey, $token)) {
-            $this->bookService->remove($book);
+            $this->bookService->removeBook($book);
             $this->notifier->ok("Книга удалена `{$book->getName()}`");
         }
 
