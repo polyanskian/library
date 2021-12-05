@@ -19,10 +19,17 @@ class CreateApiActionTest extends CustomApiWebTestCase
             'is_download' => null,
         ];
 
-        $this->expectException(\TypeError::class);
+        $expect = [
+            'success' => false,
+            'message' => 'Param `Book.is_download` type not boolean',
+        ];
 
         $client = $this->getAuthorizedClient();
         $client->jsonRequest('POST', self::URL, $data);
+        $responce = json_decode($client->getResponse()->getContent(), true);
+
+        self::assertResponseStatusCodeSame(400);
+        self::assertSame($expect, $responce);
     }
 
     public function testOk(): void

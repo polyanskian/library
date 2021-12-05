@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
-use App\Dto\BookSerializeDto;
 use App\Entity\Book;
 use App\Repository\BookRepository;
 use App\Responce\ErrorApiJsonResponse;
+use App\Serialize\BookSerializeData;
 use App\Service\BookService;
 use Exception;
 use JMS\Serializer\SerializerInterface;
@@ -44,7 +44,7 @@ class BookApiController extends AbstractController implements ApiAuthenticatedCo
 
         $dataBooks = array_map(function (Book $book) {
             $urlUpload = $this->getParameter('url.web');
-            return new BookSerializeDto($book->toArray(), $urlUpload);
+            return new BookSerializeData($book->toArray(), $urlUpload);
         }, $books);
 
         $json = $this->serializer->serialize($dataBooks, 'json');
@@ -58,9 +58,9 @@ class BookApiController extends AbstractController implements ApiAuthenticatedCo
     {
         try {
             /**
-             * @var $dto BookSerializeDto
+             * @var $dto BookSerializeData
              */
-            $dto = $this->serializer->deserialize($request->getContent(), BookSerializeDto::class, 'json');
+            $dto = $this->serializer->deserialize($request->getContent(), BookSerializeData::class, 'json');
         } catch (Exception $e) {
             return new ErrorApiJsonResponse($e->getMessage());
         }
@@ -80,7 +80,7 @@ class BookApiController extends AbstractController implements ApiAuthenticatedCo
         $this->bookService->add($book);
 
         $urlUpload = $this->getParameter('url.web');
-        $json = $this->serializer->serialize(new BookSerializeDto($book->toArray(), $urlUpload), 'json');
+        $json = $this->serializer->serialize(new BookSerializeData($book->toArray(), $urlUpload), 'json');
         return JsonResponse::fromJsonString($json);
     }
 
@@ -91,9 +91,9 @@ class BookApiController extends AbstractController implements ApiAuthenticatedCo
     {
         try {
             /**
-             * @var $dto BookSerializeDto
+             * @var $dto BookSerializeData
              */
-            $dto = $this->serializer->deserialize($request->getContent(), BookSerializeDto::class, 'json');
+            $dto = $this->serializer->deserialize($request->getContent(), BookSerializeData::class, 'json');
         } catch (Exception $e) {
             return new ErrorApiJsonResponse($e->getMessage());
         }
@@ -113,7 +113,7 @@ class BookApiController extends AbstractController implements ApiAuthenticatedCo
         $this->bookService->edit($book);
 
         $urlUpload = $this->getParameter('url.web');
-        $json = $this->serializer->serialize(new BookSerializeDto($book->toArray(), $urlUpload), 'json');
+        $json = $this->serializer->serialize(new BookSerializeData($book->toArray(), $urlUpload), 'json');
         return JsonResponse::fromJsonString($json);
     }
 
