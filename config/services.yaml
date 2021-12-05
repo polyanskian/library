@@ -61,4 +61,3 @@ services:
     App\Service\ImageThumb:
         $pathWeb: '%path.web%'
         $dirThumb: '%dir.thumb%'
-        $resizer: '@App\Service\ImageResizer\ImageResizerInterface'
