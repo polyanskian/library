@@ -3,7 +3,7 @@
 start-dev:
 	npx yarn
 	npx yarn dev
-	docker-compose up -d --buld
+	docker-compose up -d --build
 	docker exec -it library-php7.4 composer i
 	docker exec -it library-php7.4 bin/console doctrine:migrations:migrate -n
 	docker exec -it library-php7.4 bin/console doctrine:migrations:migrate -n --env=test
@@ -16,7 +16,7 @@ stop:
 	docker-compose down
 
 tests:
-	docker-compose up --build -d
+	docker-compose up -d --build
 	docker exec -it library-php7.4 bin/console doctrine:migrations:migrate -n --env=test
 	docker exec -it library-php7.4 ./vendor/bin/phpunit
 
