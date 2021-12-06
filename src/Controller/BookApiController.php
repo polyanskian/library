@@ -58,7 +58,7 @@ class BookApiController extends AbstractController implements ApiAuthenticatedCo
     {
         try {
             /**
-             * @var $dto BookSerializeData
+             * @var BookSerializeData $dto
              */
             $dto = $this->serializer->deserialize($request->getContent(), BookSerializeData::class, 'json');
         } catch (Exception $e) {
@@ -91,7 +91,7 @@ class BookApiController extends AbstractController implements ApiAuthenticatedCo
     {
         try {
             /**
-             * @var $dto BookSerializeData
+             * @var BookSerializeData $dto
              */
             $dto = $this->serializer->deserialize($request->getContent(), BookSerializeData::class, 'json');
         } catch (Exception $e) {
