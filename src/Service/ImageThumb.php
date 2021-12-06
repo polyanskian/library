@@ -29,8 +29,8 @@ class ImageThumb
     private function getPathThumb(string $pathRelative, array $params): string
     {
         $info = pathinfo($pathRelative);
-        $dir = $info['dirname'] ?? '';
-        $name = $info['filename'] ?? '';
+        $dir = $info['dirname'];
+        $name = $info['filename'];
         $ext = $info['extension'] ?? '';
 
         $fileName = $this->makeName($name, $params);
