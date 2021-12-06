@@ -56,7 +56,7 @@ class BookService
         $this->entityManager->flush();
     }
 
-    public function removeBookData($book): void
+    public function removeBookData(Book $book): void
     {
         $fileUploader = $this->configureFileUploader($book);
         $dir = $fileUploader->getPathUploadDir();

@@ -10,7 +10,7 @@ use Doctrine\Persistence\ObjectManager;
 
 class UserFixture extends Fixture
 {
-    public function load(ObjectManager $manager)
+    public function load(ObjectManager $manager): void
     {
         $user = (new User())
             ->setUsername('test')

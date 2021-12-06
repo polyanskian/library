@@ -62,6 +62,9 @@ class BookSerializeData
         $this->urlUpload = $urlUpload;
     }
 
+    /**
+     * @param mixed $id
+     */
     public function setId($id): void
     {
         if ($id !== null && !is_int($id)) {
@@ -71,6 +74,9 @@ class BookSerializeData
         $this->id = $id;
     }
 
+    /**
+     * @param mixed $name
+     */
     public function setName($name): void
     {
         if (!is_string($name)) {
@@ -80,6 +86,9 @@ class BookSerializeData
         $this->name = $name;
     }
 
+    /**
+     * @param mixed $author
+     */
     public function setAuthor($author): void
     {
         if (!is_string($author)) {
@@ -89,6 +98,9 @@ class BookSerializeData
         $this->author = $author;
     }
 
+    /**
+     * @param mixed $cover
+     */
     public function setCover($cover): void
     {
         if ($cover !== null && !is_string($cover)) {
@@ -103,6 +115,9 @@ class BookSerializeData
         return ($this->cover) ? "$this->urlUpload/$this->cover" : '';
     }
 
+    /**
+     * @param mixed $file
+     */
     public function setFile($file): void
     {
         if ($file !== null && !is_string($file)) {
@@ -117,6 +132,9 @@ class BookSerializeData
         return ($this->file && $this->isDownload) ? "$this->urlUpload/$this->file" : '';
     }
 
+    /**
+     * @param mixed $dateRead
+     */
     public function setDateRead($dateRead): void
     {
         if ($dateRead !== null && !($dateRead instanceof DateTimeInterface)) {
@@ -126,6 +144,9 @@ class BookSerializeData
         $this->dateRead = $dateRead;
     }
 
+    /**
+     * @param mixed $isDownload
+     */
     public function setIsDownload($isDownload): void
     {
         if (!is_bool($isDownload)) {

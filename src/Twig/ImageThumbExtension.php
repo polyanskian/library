@@ -24,7 +24,7 @@ class ImageThumbExtension extends AbstractExtension
         ];
     }
 
-    public function getThumbResize($path, $width = 0, $height = 0, $enlarge = false): string
+    public function getThumbResize(string $path, int $width = 0, int $height = 0, bool $enlarge = false): string
     {
         return $this->imageThumb->getResize($path, $width, $height, $enlarge);
     }
