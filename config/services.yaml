@@ -43,9 +43,6 @@ services:
     App\EventSubscriber\BookEntityEventSubscriber:
         $cacheKey: '%cache.key.book_index%'
 
-    Symfony\Component\HttpFoundation\Session\Session:
-        '@Symfony\Component\HttpFoundation\Session\SessionInterface'
-
     App\Service\BookService:
         $dirUpload: '%dir.upload%'
 

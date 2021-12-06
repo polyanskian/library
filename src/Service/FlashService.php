@@ -4,44 +4,44 @@ declare(strict_types=1);
 
 namespace App\Service;
 
-use Symfony\Component\HttpFoundation\Session\Session;
+use Symfony\Component\HttpFoundation\Session\Flash\FlashBagInterface;
 
 class FlashService
 {
-    private Session $session;
+    private FlashBagInterface $bag;
 
-    public function __construct(Session $session)
+    public function __construct(FlashBagInterface $bag)
     {
-        $this->session = $session;
+        $this->bag = $bag;
     }
 
     public function notice(string $message): self
     {
-        $this->session->getFlashBag()->add('secondary', $message);
+        $this->bag->add('secondary', $message);
         return $this;
     }
-
+    
     public function ok(string $message): self
     {
-        $this->session->getFlashBag()->add('success', $message);
+        $this->bag->add('success', $message);
         return $this;
     }
 
     public function info(string $message): self
     {
-        $this->session->getFlashBag()->add('info', $message);
+        $this->bag->add('info', $message);
         return $this;
     }
 
     public function warning(string $message): self
     {
-        $this->session->getFlashBag()->add('warning', $message);
+        $this->bag->add('warning', $message);
         return $this;
     }
 
     public function error(string $message): self
     {
-        $this->session->getFlashBag()->add('danger', $message);
+        $this->bag->add('danger', $message);
         return $this;
     }
 }
