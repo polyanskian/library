@@ -18,7 +18,7 @@ stop:
 tests:
 	docker-compose up -d --build
 	docker exec -it library-php7.4 bin/console doctrine:migrations:migrate -n --env=test
-	docker exec -it library-php7.4 ./vendor/bin/phpunit
+	docker exec -it library-php7.4 bin/phpunit
 
 console:
 	docker exec -it library-php7.4 bash
